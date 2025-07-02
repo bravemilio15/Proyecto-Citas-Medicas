@@ -3,9 +3,7 @@ import LoginForm from '../pages/Login/LoginForm.jsx';
 import RegisterForm from '../pages/Register/RegisterForm.jsx';
 import './AuthPage.css';
 
-/**
- * Página principal de autenticación que maneja login y registro
- */
+
 export const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
 
