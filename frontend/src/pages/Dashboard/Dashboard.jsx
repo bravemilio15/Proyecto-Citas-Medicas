@@ -1,4 +1,4 @@
-import { useAuth } from '../hooks/useAuth.js';
+import { useAuth } from '../../hooks/useAuth.js';
 import './Dashboard.css';
 
 /**
@@ -76,3 +76,4 @@ export const Dashboard = () => {
     </div>
   );
 }; 
+export default Dashboard;

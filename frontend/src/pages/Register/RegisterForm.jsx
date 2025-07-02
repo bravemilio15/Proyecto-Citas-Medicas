@@ -1,14 +1,18 @@
 import { useState } from 'react';
-import { useAuth } from '../hooks/useAuth.js';
-import { validateLoginForm } from '../utils/validation.js';
-import './LoginForm.css';
+import { useAuth } from '../../hooks/useAuth.js';
+import { validateRegisterForm } from '../../utils/validation.js';
+import Button from '../../components/ui/Button.jsx';
+import Input from '../../components/ui/Input.jsx';
+import { Link } from 'react-router-dom';
+import './RegisterForm.css';
 
 /**
- * Componente de formulario de login
+ * Componente de formulario de registro
  */
-export const LoginForm = ({ onSwitchToRegister }) => {
-  const { login, loading, error, clearError } = useAuth();
+export const RegisterForm = () => {
+  const { register, loading, error, clearError } = useAuth();
   const [formData, setFormData] = useState({
+    displayName: '',
     email: '',
     password: ''
   });
@@ -43,28 +47,45 @@ export const LoginForm = ({ onSwitchToRegister }) => {
     e.preventDefault();
     
     // Validar formulario
-    const validation = validateLoginForm(formData);
+    const validation = validateRegisterForm(formData);
     if (!validation.isValid) {
       setValidationErrors(validation.errors);
       return;
     }
 
-    // Intentar login
-    await login(formData.email, formData.password);
+    // Intentar registro
+    await register(formData.email, formData.password, formData.displayName);
   };
 
   return (
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
-          <h2>Iniciar Sesión</h2>
-          <p>Accede a tu cuenta de citas médicas</p>
+          <h2>Crear Cuenta</h2>
+          <p>Regístrate para acceder a citas médicas</p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
+            <label htmlFor="displayName">Nombre Completo</label>
+            <Input
+              type="text"
+              id="displayName"
+              name="displayName"
+              value={formData.displayName}
+              onChange={handleInputChange}
+              placeholder="Tu nombre completo"
+              className={validationErrors.displayName ? 'error' : ''}
+              disabled={loading}
+            />
+            {validationErrors.displayName && (
+              <span className="error-message">{validationErrors.displayName}</span>
+            )}
+          </div>
+
+          <div className="form-group">
             <label htmlFor="email">Email</label>
-            <input
+            <Input
               type="email"
               id="email"
               name="email"
@@ -81,13 +102,13 @@ export const LoginForm = ({ onSwitchToRegister }) => {
 
           <div className="form-group">
             <label htmlFor="password">Contraseña</label>
-            <input
+            <Input
               type="password"
               id="password"
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              placeholder="Tu contraseña"
+              placeholder="Mínimo 6 caracteres"
               className={validationErrors.password ? 'error' : ''}
               disabled={loading}
             />
@@ -102,28 +123,22 @@ export const LoginForm = ({ onSwitchToRegister }) => {
             </div>
           )}
 
-          <button 
-            type="submit" 
-            className="login-button"
-            disabled={loading}
-          >
-            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-          </button>
+          <Button type="submit" disabled={loading}>
+            {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
+          </Button>
         </form>
 
         <div className="login-footer">
           <p>
-            ¿No tienes cuenta?{' '}
-            <button 
-              type="button" 
-              className="link-button"
-              onClick={onSwitchToRegister}
-            >
-              Regístrate aquí
-            </button>
+            ¿Ya tienes cuenta?{' '}
+            <Link to="/login" className="link-button">
+              Inicia sesión aquí
+            </Link>
           </p>
         </div>
       </div>
     </div>
   );
-}; 
+};
+
+export default RegisterForm; 

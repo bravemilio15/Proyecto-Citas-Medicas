@@ -1,0 +1,30 @@
+.ui-button {
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.ui-button:hover:not(:disabled) {
+  background: #222;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+}
+
+.ui-button:active:not(:disabled) {
+  background: #000;
+  transform: translateY(0);
+}
+
+.ui-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+} 
