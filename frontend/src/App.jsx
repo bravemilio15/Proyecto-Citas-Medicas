@@ -1,35 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useAuth } from './hooks/useAuth.js';
+import { AuthPage } from './components/AuthPage.jsx';
+import { Dashboard } from './components/Dashboard.jsx';
+import './App.css';
 
+/**
+ * Componente principal de la aplicación
+ * Maneja la lógica de autenticación y renderiza el contenido apropiado
+ */
 function App() {
-  const [count, setCount] = useState(0)
+  const { user, loading } = useAuth();
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+  // Mostrar pantalla de carga mientras se verifica la autenticación
+  if (loading) {
+    return (
+      <div className="app-loading">
+        <div className="loading-spinner"></div>
+        <p>Iniciando aplicación...</p>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    );
+  }
+
+  // Si el usuario está autenticado, mostrar el dashboard
+  if (user) {
+    return <Dashboard />;
+  }
+
+  // Si no está autenticado, mostrar la página de login/registro
+  return <AuthPage />;
 }
 
-export default App
+export default App;
