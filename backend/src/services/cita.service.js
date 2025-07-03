@@ -28,9 +28,16 @@ class CitaService {
     const id = await this.getNextId();
     const idSnap = await this.collection.where('id', '==', id.toString()).get();
     if (!idSnap.empty) throw new Error('ID de cita duplicado, intenta de nuevo');
+    
+    // Mapear motivo a notas si viene el campo motivo
+    const datosParaGuardar = { ...datosCita };
+    if (datosCita.motivo && !datosCita.notas) {
+      datosParaGuardar.notas = datosCita.motivo;
+    }
+    
     const nuevaCita = new Cita({
       id: id.toString(),
-      ...datosCita,
+      ...datosParaGuardar,
       estado: 'pendiente'
     });
     await this.collection.doc(nuevaCita.id).set({ ...nuevaCita });
@@ -69,7 +76,14 @@ class CitaService {
         throw new Error('Nuevo horario no disponible');
       }
     }
-    await docRef.update(datosActualizados);
+    
+    // Mapear motivo a notas si viene el campo motivo
+    const datosParaActualizar = { ...datosActualizados };
+    if (datosActualizados.motivo && !datosActualizados.notas) {
+      datosParaActualizar.notas = datosActualizados.motivo;
+    }
+    
+    await docRef.update(datosParaActualizar);
     return (await docRef.get()).data();
   }
 
@@ -96,8 +110,6 @@ class CitaService {
     if (!pacienteId || !doctorId || !fecha || !hora) return false;
     if (!DateUtils.esFechaValida(fecha)) return false;
     if (!DateUtils.esHoraValida(hora)) return false;
-    if (!DateUtils.estaEnHorarioLaboral(hora)) return false;
-    if (!ValidationUtils.esFechaFutura(fecha)) return false;
     return true;
   }
 
@@ -117,6 +129,23 @@ class CitaService {
     const completadas = citas.filter(cita => cita.estado === 'completada').length;
     const canceladas = citas.filter(cita => cita.estado === 'cancelada').length;
     return { total, pendientes, completadas, canceladas };
+  }
+
+  async obtenerSlotsDisponibles(doctorId, dias = 30) {
+    const slots = [];
+    const today = new Date();
+    for (let i = 0; i < dias; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      const fecha = d.toISOString().slice(0, 10);
+      const disponibilidad = await this.disponibilidadService.obtenerDisponibilidad(doctorId, fecha);
+      if (disponibilidad && disponibilidad.slots && disponibilidad.slots.length > 0) {
+        disponibilidad.slots.forEach(hora => {
+          slots.push({ fecha, hora });
+        });
+      }
+    }
+    return slots;
   }
 }
 

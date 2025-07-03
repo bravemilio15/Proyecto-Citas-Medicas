@@ -12,6 +12,7 @@ router.get('/estadisticas', doctorController.obtenerEstadisticas);
 // Rutas para horarios disponibles (deben ir antes que las rutas con parámetros)
 router.post('/:doctorId/horarios', doctorController.agregarHorarioDisponible);
 router.get('/:doctorId/horarios', doctorController.obtenerHorariosDoctor);
+router.put('/:doctorId/horarios', doctorController.actualizarTodosHorarios);
 router.put('/:doctorId/horarios/:horarioId', doctorController.actualizarHorarioDisponible);
 router.delete('/:doctorId/horarios/:horarioId', doctorController.eliminarHorarioDisponible);
 

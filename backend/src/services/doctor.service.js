@@ -92,21 +92,27 @@ class DoctorService {
     }
     const doctor = doc.data();
     const horarioDisponible = doctor.horarioDisponible || [];
-    // IDs secuenciales
-    let nextId = 1;
-    if (horarioDisponible.length > 0) {
-      const ids = horarioDisponible.map(h => parseInt(h.id, 10)).filter(Number.isInteger);
-      if (ids.length > 0) nextId = Math.max(...ids) + 1;
-    }
-    const horario = {
-      id: nextId.toString(),
+    // Validar solapamiento en la misma fecha
+    const solapa = horarioDisponible.some(h =>
+      h.fecha === datosHorario.fecha &&
+      (
+        (datosHorario.horaInicio >= h.horaInicio && datosHorario.horaInicio < h.horaFin) ||
+        (datosHorario.horaFin > h.horaInicio && datosHorario.horaFin <= h.horaFin) ||
+        (datosHorario.horaInicio <= h.horaInicio && datosHorario.horaFin >= h.horaFin)
+      )
+    );
+    if (solapa) throw new Error('El horario se solapa con otro bloque existente para esa fecha');
+    // IDs únicos
+    const id = Date.now().toString() + Math.floor(Math.random()*1000).toString();
+    const nuevoHorario = {
+      id,
       doctorId,
       ...datosHorario
     };
-    horarioDisponible.push(horario);
+    horarioDisponible.push(nuevoHorario);
     await docRef.update({ horarioDisponible });
-    this.disponibilidadService.agregarHorarioDisponible(doctorId, horario);
-    return horario;
+    this.disponibilidadService.agregarHorarioDisponible(doctorId, nuevoHorario);
+    return nuevoHorario;
   }
 
   async actualizarHorarioDisponible(doctorId, horarioId, datosActualizados) {
@@ -124,6 +130,33 @@ class DoctorService {
     await docRef.update({ horarioDisponible: horarios });
     this.disponibilidadService.actualizarHorarioDisponible(doctorId, horarioId, datosActualizados);
     return horarios[index];
+  }
+
+  async actualizarTodosHorarios(doctorId, horariosNuevos) {
+    const docRef = this.collection.doc(doctorId);
+    const doc = await docRef.get();
+    if (!doc.exists) throw new Error('Doctor no encontrado');
+    
+    // Validar todos los horarios
+    for (const horario of horariosNuevos) {
+      if (!this.validarHorarioDisponible(horario)) {
+        throw new Error('Datos de horario inválidos');
+      }
+    }
+
+    // Asignar IDs a los horarios que no los tengan
+    const horariosConIds = horariosNuevos.map((horario, index) => ({
+      ...horario,
+      id: horario.id || (index + 1).toString(),
+      doctorId
+    }));
+
+    await docRef.update({ horarioDisponible: horariosConIds });
+    
+    // Actualizar el servicio de disponibilidad
+    this.disponibilidadService.actualizarTodosHorarios(doctorId, horariosConIds);
+    
+    return horariosConIds;
   }
 
   async eliminarHorarioDisponible(doctorId, horarioId) {
@@ -158,9 +191,14 @@ class DoctorService {
   }
 
   validarHorarioDisponible(datosHorario) {
-    const { diaSemana, horaInicio, horaFin } = datosHorario;
-    if (typeof diaSemana !== 'number' || diaSemana < 0 || diaSemana > 6) return false;
+    const { fecha, horaInicio, horaFin } = datosHorario;
+    // Validar fecha
+    if (!fecha || typeof fecha !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) return false;
+    // Validar horas
     if (!horaInicio || !horaFin) return false;
+    if (!/^\d{2}:\d{2}$/.test(horaInicio) || !/^\d{2}:\d{2}$/.test(horaFin)) return false;
+    // Validar que horaInicio < horaFin
+    if (horaInicio >= horaFin) return false;
     return true;
   }
 

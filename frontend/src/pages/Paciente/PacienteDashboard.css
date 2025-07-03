@@ -1,0 +1,42 @@
+.paciente-dashboard {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%);
+  color: #222;
+}
+
+.paciente-dashboard h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.paciente-dashboard-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.dashboard-link {
+  background: white;
+  color: #2193b0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 1.2rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  text-align: center;
+}
+
+.dashboard-link:hover {
+  background: #2193b0;
+  color: white;
+  transform: translateY(-2px) scale(1.03);
+}

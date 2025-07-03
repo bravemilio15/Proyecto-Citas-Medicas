@@ -1,4 +1,5 @@
 const { CitaService } = require('../services');
+const DateUtils = require('../utils/date-utils');
 
 class CitaController {
   constructor() {
@@ -171,6 +172,20 @@ class CitaController {
         success: false,
         error: error.message
       });
+    }
+  };
+
+  /**
+   * Obtener todos los slots disponibles para un doctor en los próximos 30 días
+   */
+  obtenerSlotsDisponibles = async (req, res) => {
+    try {
+      const { doctorId } = req.params;
+      const dias = 30;
+      const slots = await this.citaService.obtenerSlotsDisponibles(doctorId, dias);
+      res.json({ success: true, data: slots });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
     }
   };
 }

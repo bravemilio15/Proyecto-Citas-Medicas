@@ -10,7 +10,7 @@ class DoctorController {
    */
   crearDoctor = async (req, res) => {
     try {
-      const nuevoDoctor = this.doctorService.crearDoctor(req.body);
+      const nuevoDoctor = await this.doctorService.crearDoctor(req.body);
       res.status(201).json({
         success: true,
         data: nuevoDoctor,
@@ -30,7 +30,7 @@ class DoctorController {
   obtenerDoctor = async (req, res) => {
     try {
       const { id } = req.params;
-      const doctor = this.doctorService.obtenerDoctor(id);
+      const doctor = await this.doctorService.obtenerDoctor(id);
       
       if (!doctor) {
         return res.status(404).json({
@@ -57,7 +57,7 @@ class DoctorController {
   obtenerDoctores = async (req, res) => {
     try {
       const filtros = req.query;
-      const doctores = this.doctorService.obtenerDoctores(filtros);
+      const doctores = await this.doctorService.obtenerDoctores(filtros);
       
       res.json({
         success: true,
@@ -151,6 +151,33 @@ class DoctorController {
         success: true,
         data: horarioActualizado,
         message: 'Horario actualizado exitosamente'
+      });
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        error: error.message
+      });
+    }
+  };
+
+  /**
+   * Actualizar todos los horarios de un doctor
+   */
+  actualizarTodosHorarios = async (req, res) => {
+    try {
+      const { doctorId } = req.params;
+      const { horarios } = req.body;
+      
+      if (!horarios || !Array.isArray(horarios)) {
+        throw new Error('Se requiere un array de horarios');
+      }
+
+      const horariosActualizados = await this.doctorService.actualizarTodosHorarios(doctorId, horarios);
+      
+      res.json({
+        success: true,
+        data: horariosActualizados,
+        message: 'Horarios actualizados exitosamente'
       });
     } catch (error) {
       res.status(400).json({

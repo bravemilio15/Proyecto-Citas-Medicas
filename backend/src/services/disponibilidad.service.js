@@ -9,13 +9,12 @@ class DisponibilidadService {
   }
 
   async obtenerDisponibilidad(doctorId, fecha) {
-    const diaSemana = DateUtils.getDiaSemana(fecha);
     const docSnap = await this.doctoresCollection.doc(doctorId).get();
     if (!docSnap.exists) {
       return { disponible: false, slots: [] };
     }
     const doctor = docSnap.data();
-    const horarioDoctor = (doctor.horarioDisponible || []).find(h => h.diaSemana === diaSemana);
+    const horarioDoctor = (doctor.horarioDisponible || []).find(h => h.fecha === fecha);
     if (!horarioDoctor) {
       return { disponible: false, slots: [] };
     }
@@ -76,6 +75,15 @@ class DisponibilidadService {
     Object.assign(horarios[index], datosActualizados);
     await docRef.update({ horarioDisponible: horarios });
     return horarios[index];
+  }
+
+  async actualizarTodosHorarios(doctorId, horariosNuevos) {
+    const docRef = this.doctoresCollection.doc(doctorId);
+    const doc = await docRef.get();
+    if (!doc.exists) throw new Error('Doctor no encontrado');
+    
+    await docRef.update({ horarioDisponible: horariosNuevos });
+    return horariosNuevos;
   }
 
   async eliminarHorarioDisponible(doctorId, horarioId) {

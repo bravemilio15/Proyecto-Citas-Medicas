@@ -1,7 +1,8 @@
 class HorarioDisponible {
-  constructor({ doctorId, diaSemana, horaInicio, horaFin }) {
+  constructor({ id, doctorId, fecha, horaInicio, horaFin }) {
+    this.id = id; // único por horario
     this.doctorId = doctorId;
-    this.diaSemana = diaSemana; // 0=lunes, ..., 6=domingo
+    this.fecha = fecha; // 'YYYY-MM-DD' (fecha exacta)
     this.horaInicio = horaInicio; // 'HH:mm'
     this.horaFin = horaFin; // 'HH:mm'
   }

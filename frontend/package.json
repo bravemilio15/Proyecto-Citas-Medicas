@@ -12,6 +12,9 @@
     "check-env": "node -e \"console.log('🔍 Verificando variables de entorno...'); const env = import.meta.env || {}; const required = ['VITE_FIREBASE_API_KEY', 'VITE_FIREBASE_AUTH_DOMAIN', 'VITE_FIREBASE_PROJECT_ID']; const missing = required.filter(key => !env[key]); if (missing.length > 0) { console.log('❌ Faltan variables:', missing); process.exit(1); } else { console.log('✅ Todas las variables están configuradas'); }\""
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.18",
+    "@fullcalendar/daygrid": "^6.1.18",
+    "@fullcalendar/react": "^6.1.18",
     "firebase": "^11.10.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
