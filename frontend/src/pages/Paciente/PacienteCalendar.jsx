@@ -10,13 +10,18 @@ import './PacienteCalendar.css';
 const PacienteCalendar = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { citas, loading } = useCitas();
+  const { citas, loading } = useCitas({ userId: user?.uid });
   
+  // Debug: mostrar el UID y las citas recibidas
+  console.log('UID del usuario autenticado:', user?.uid);
+  console.log('Citas recibidas del hook useCitas:', citas);
+
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   // Filtrar citas del paciente actual
   const misCitas = citas.filter(cita => cita.pacienteId === user?.uid);
+  console.log('Citas filtradas (misCitas):', misCitas);
 
   // Convertir citas al formato que espera FullCalendar
   const eventos = misCitas.map(cita => ({
@@ -30,6 +35,7 @@ const PacienteCalendar = () => {
       cita: cita
     }
   }));
+  console.log('Eventos enviados a FullCalendar:', eventos);
 
   function getEventColor(estado) {
     const colors = {
