@@ -58,6 +58,20 @@ export const validateDisplayName = (displayName) => {
 };
 
 /**
+ * Valida si una cédula es válida (8 a 12 dígitos)
+ */
+export const isValidCedula = (cedula) => {
+  return /^\d{8,12}$/.test(cedula);
+};
+
+/**
+ * Valida si un teléfono es válido (7 a 15 dígitos, puede incluir +, espacios, guiones, paréntesis)
+ */
+export const isValidTelefono = (telefono) => {
+  return /^[\d\s\-\+\(\)]{7,15}$/.test(telefono);
+};
+
+/**
  * Valida un formulario de login
  * @param {Object} formData - Datos del formulario { email, password }
  * @returns {Object} - Objeto con isValid y errors
@@ -85,7 +99,7 @@ export const validateLoginForm = (formData) => {
 
 /**
  * Valida un formulario de registro
- * @param {Object} formData - Datos del formulario { email, password, displayName }
+ * @param {Object} formData - Datos del formulario { email, password, displayName, cedula, telefono }
  * @returns {Object} - Objeto con isValid y errors
  */
 export const validateRegisterForm = (formData) => {
@@ -110,6 +124,20 @@ export const validateRegisterForm = (formData) => {
     errors.password = 'La contraseña es requerida';
   } else if (!passwordValidation.isValid) {
     errors.password = passwordValidation.message;
+  }
+
+  // Validar cédula
+  if (!formData.cedula || !formData.cedula.trim()) {
+    errors.cedula = 'La cédula es requerida';
+  } else if (!isValidCedula(formData.cedula)) {
+    errors.cedula = 'La cédula debe tener entre 8 y 12 dígitos';
+  }
+
+  // Validar teléfono
+  if (!formData.telefono || !formData.telefono.trim()) {
+    errors.telefono = 'El teléfono es requerido';
+  } else if (!isValidTelefono(formData.telefono)) {
+    errors.telefono = 'El teléfono debe tener entre 7 y 15 dígitos';
   }
 
   return {

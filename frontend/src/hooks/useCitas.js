@@ -6,7 +6,6 @@ import {
   cancelarCita as cancelarCitaService, 
   completarCita as completarCitaService 
 } from '../lib/citasService';
-import { useAuth } from './useAuth.js';
 
 /**
  * Hook para gestionar citas médicas.

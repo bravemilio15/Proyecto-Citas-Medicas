@@ -58,8 +58,8 @@ class CitaController {
   obtenerCitas = async (req, res) => {
     try {
       const filtros = req.query;
-      const citas = this.citaService.obtenerCitas(filtros);
-      
+      const citas = await this.citaService.obtenerCitas(filtros);
+      console.log('Citas encontradas (backend):', citas);
       res.json({
         success: true,
         data: citas,

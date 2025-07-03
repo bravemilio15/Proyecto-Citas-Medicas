@@ -11,10 +11,17 @@ const PORT = config.port;
 
 app.use(helmet());
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'],
+  origin: [
+    'http://localhost:5173', 
+    'http://localhost:3000', 
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:3000',
+    'http://[::1]:5173',
+    'http://[::1]:3000'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }));
 app.use(morgan('combined'));
 app.use(express.json());
@@ -22,6 +29,19 @@ app.use(express.urlencoded({ extended: true }));
 
 // Middleware para manejar preflight requests
 app.options('*', cors());
+
+// Middleware adicional para CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 // Ruta de prueba
 app.get('/', (req, res) => {

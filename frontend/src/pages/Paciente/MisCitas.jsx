@@ -11,13 +11,19 @@ import './MisCitas.css';
 const MisCitas = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { citas, loading, cancelarCita } = useCitas();
+  const { citas, loading, cancelarCita } = useCitas({ userId: user?.uid });
   
+  // Debug: mostrar el UID y las citas recibidas
+  console.log('UID del usuario autenticado:', user?.uid);
+  console.log('Citas recibidas del hook useCitas:', citas);
+
   const [viewMode, setViewMode] = useState('cards'); // 'cards' o 'table'
   const [filterStatus, setFilterStatus] = useState('todas');
 
-  // Filtrar citas del usuario actual
+  // Filtrar citas del usuario actual (por si acaso, aunque ya vienen filtradas)
   const misCitas = citas.filter(cita => cita.pacienteId === user?.uid);
+  // Debug: mostrar las citas filtradas
+  console.log('Citas filtradas (misCitas):', misCitas);
 
   // Filtrar por estado
   const citasFiltradas = filterStatus === 'todas' 

@@ -57,7 +57,10 @@ class CitaService {
     if (filtros.estado) query = query.where('estado', '==', filtros.estado);
     if (filtros.fecha) query = query.where('fecha', '==', filtros.fecha);
     const snapshot = await query.get();
-    return snapshot.docs.map(doc => doc.data());
+    const citas = snapshot.docs.map(doc => doc.data());
+    console.log('obtenerCitas filtros:', filtros);
+    console.log('obtenerCitas resultado:', citas);
+    return citas;
   }
 
   async actualizarCita(id, datosActualizados) {

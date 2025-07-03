@@ -4,18 +4,37 @@ const API_URL = API_CONFIG.DOCTORES_URL;
 
 // Obtener todos los doctores (GET /api/doctores)
 export async function obtenerDoctores(filtros = {}) {
-  const params = new URLSearchParams(filtros);
-  const res = await fetch(`${API_URL}?${params}`);
-  if (!res.ok) throw new Error('Error al obtener doctores');
-  const response = await res.json();
-  
-  // El backend devuelve {success: true, data: [...]}
-  if (response.success && response.data) {
-    return Array.isArray(response.data) ? response.data : [];
+  try {
+    const params = new URLSearchParams(filtros);
+    const res = await fetch(`${API_URL}?${params}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      mode: 'cors'
+    });
+    
+    if (!res.ok) {
+      throw new Error(`Error HTTP: ${res.status} - ${res.statusText}`);
+    }
+    
+    const response = await res.json();
+    
+    // El backend devuelve {success: true, data: [...]}
+    if (response.success && response.data) {
+      return Array.isArray(response.data) ? response.data : [];
+    }
+    
+    // Si no tiene la estructura esperada, devolver como array
+    return Array.isArray(response) ? response : [];
+  } catch (error) {
+    console.error('Error en obtenerDoctores:', error);
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error('Error de conexión: No se pudo conectar con el servidor');
+    }
+    throw error;
   }
-  
-  // Si no tiene la estructura esperada, devolver como array
-  return Array.isArray(response) ? response : [];
 }
 
 // Obtener un doctor por ID (GET /api/doctores/:id)
