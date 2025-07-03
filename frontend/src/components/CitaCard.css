@@ -1,0 +1,73 @@
+.cita-card {
+  background: rgba(255,255,255,0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(33,147,176,0.10);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-left: 4px solid #2193b0;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.cita-card:hover {
+  box-shadow: 0 12px 40px rgba(33,147,176,0.15);
+  transform: translateY(-2px);
+}
+.cita-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cita-card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2193b0;
+}
+.cita-card-status {
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  background: #e6f7fa;
+  color: #2193b0;
+}
+.cita-card-body {
+  color: #444;
+  font-size: 1rem;
+}
+.cita-card-footer {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.cita-notes {
+  background: #f8f9fa;
+  border-left: 3px solid #2193b0;
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: #555;
+}
+
+.cita-notes strong {
+  color: #2193b0;
+  margin-right: 0.5rem;
+}
+@media (max-width: 600px) {
+  .cita-card {
+    padding: 1rem;
+  }
+  .cita-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .cita-card-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+} 

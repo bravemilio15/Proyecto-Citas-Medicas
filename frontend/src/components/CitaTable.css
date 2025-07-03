@@ -1,0 +1,60 @@
+.cita-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255,255,255,0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(33,147,176,0.10);
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+.cita-table th, .cita-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e6f7fa;
+}
+.cita-table th {
+  background: #e6f7fa;
+  color: #2193b0;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.cita-table tr:last-child td {
+  border-bottom: none;
+}
+.cita-table-status {
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  background: #e6f7fa;
+  color: #2193b0;
+  font-size: 0.95rem;
+}
+.cita-table-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cita-notes-cell {
+  max-width: 200px;
+  word-wrap: break-word;
+}
+
+.cita-notes-cell span {
+  display: block;
+  line-height: 1.4;
+}
+
+.no-notes {
+  color: #999;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+@media (max-width: 768px) {
+  .cita-table th, .cita-table td {
+    padding: 0.5rem;
+    font-size: 0.95rem;
+  }
+  .cita-table {
+    font-size: 0.95rem;
+  }
+} 

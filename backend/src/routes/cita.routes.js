@@ -5,6 +5,7 @@ const router = express.Router();
 const citaController = new CitaController();
 
 // Rutas para disponibilidad (deben ir antes que las rutas con parámetros)
+router.get('/slots/:doctorId', citaController.obtenerSlotsDisponibles);
 router.get('/disponibilidad/:doctorId/:fecha', citaController.obtenerDisponibilidad);
 
 // Rutas para citas
