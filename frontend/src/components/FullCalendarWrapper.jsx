@@ -3,12 +3,12 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import esLocale from '@fullcalendar/core/locales/es';
 
-const FullCalendarWrapper = ({ eventos }) => (
+const FullCalendarWrapper = ({ events }) => (
   <FullCalendar
     plugins={[dayGridPlugin]}
     initialView="dayGridMonth"
     locale={esLocale}
-    events={eventos}
+    events={events}
     height={600}
   />
 );
