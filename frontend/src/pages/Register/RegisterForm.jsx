@@ -5,6 +5,7 @@ import Button from '../../components/ui/Button.jsx';
 import Input from '../../components/ui/Input.jsx';
 import { Link } from 'react-router-dom';
 import './RegisterForm.css';
+import { crearPaciente } from '../../lib/pacienteService.js';
 
 /**
  * Componente de formulario de registro
@@ -14,7 +15,9 @@ export const RegisterForm = () => {
   const [formData, setFormData] = useState({
     displayName: '',
     email: '',
-    password: ''
+    password: '',
+    cedula: '',
+    telefono: ''
   });
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -54,7 +57,24 @@ export const RegisterForm = () => {
     }
 
     // Intentar registro
-    await register(formData.email, formData.password, formData.displayName);
+    const result = await register(formData.email, formData.password, formData.displayName);
+    if (result && result.success && result.user) {
+      // Mostrar el UID por consola
+      console.log('UID del usuario registrado:', result.user.uid);
+      // Crear paciente automáticamente
+      try {
+        await crearPaciente({
+          id: result.user.uid,
+          email: result.user.email,
+          nombre: result.user.displayName || '',
+          cedula: formData.cedula,
+          telefono: formData.telefono
+        });
+        console.log('Paciente creado correctamente');
+      } catch (err) {
+        console.error('Error al crear paciente:', err);
+      }
+    }
   };
 
   return (
@@ -80,6 +100,40 @@ export const RegisterForm = () => {
             />
             {validationErrors.displayName && (
               <span className="error-message">{validationErrors.displayName}</span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="cedula">Cédula</label>
+            <Input
+              type="text"
+              id="cedula"
+              name="cedula"
+              value={formData.cedula}
+              onChange={handleInputChange}
+              placeholder="Tu cédula (8-12 dígitos)"
+              className={validationErrors.cedula ? 'error' : ''}
+              disabled={loading}
+            />
+            {validationErrors.cedula && (
+              <span className="error-message">{validationErrors.cedula}</span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="telefono">Teléfono</label>
+            <Input
+              type="text"
+              id="telefono"
+              name="telefono"
+              value={formData.telefono}
+              onChange={handleInputChange}
+              placeholder="Tu teléfono (7-15 dígitos)"
+              className={validationErrors.telefono ? 'error' : ''}
+              disabled={loading}
+            />
+            {validationErrors.telefono && (
+              <span className="error-message">{validationErrors.telefono}</span>
             )}
           </div>
 

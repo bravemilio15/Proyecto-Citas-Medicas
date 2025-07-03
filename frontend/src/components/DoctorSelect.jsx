@@ -15,9 +15,23 @@ const DoctorSelect = ({ value, onChange }) => {
         // Asegurar que data sea un array
         const doctoresArray = Array.isArray(data) ? data : [];
         setDoctores(doctoresArray);
+        
+        if (doctoresArray.length === 0) {
+          setError('No hay doctores disponibles');
+        }
       } catch (err) {
         console.error('Error al cargar doctores:', err);
-        setError('Error al cargar doctores: ' + err.message);
+        let errorMessage = 'Error al cargar doctores';
+        
+        if (err.message.includes('conectar')) {
+          errorMessage = 'No se pudo conectar con el servidor. Verifica que el backend esté corriendo.';
+        } else if (err.message.includes('CORS')) {
+          errorMessage = 'Error de CORS. Verifica la configuración del servidor.';
+        } else {
+          errorMessage += ': ' + err.message;
+        }
+        
+        setError(errorMessage);
         setDoctores([]);
       } finally {
         setLoading(false);
@@ -45,6 +59,17 @@ const DoctorSelect = ({ value, onChange }) => {
         <select disabled>
           <option>Error al cargar doctores</option>
         </select>
+        <div className="error-message" style={{ 
+          color: '#d32f2f', 
+          fontSize: '0.875rem', 
+          marginTop: '0.5rem',
+          padding: '0.5rem',
+          backgroundColor: '#ffebee',
+          borderRadius: '4px',
+          border: '1px solid #ffcdd2'
+        }}>
+          {error}
+        </div>
       </div>
     );
   }
